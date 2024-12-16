@@ -11,16 +11,16 @@ export const ROUTES = {
 
 function createRouter(options = {}) {
   const routes = options.routes || {};
-  const isHashMode = window.location.pathname.endsWith("hash.html");
+  const isHashMode = () => window.location.hash !== "";
 
   function getPath() {
-    return isHashMode
+    return isHashMode()
       ? window.location.hash.slice(1) || "/"
       : window.location.pathname;
   }
 
   function updatePath(path) {
-    if (isHashMode) {
+    if (isHashMode()) {
       window.location.hash = path;
     } else {
       history.pushState(null, "", path);
@@ -28,7 +28,7 @@ function createRouter(options = {}) {
   }
 
   function replacePath(path) {
-    if (isHashMode) {
+    if (isHashMode()) {
       window.location.replace(`#${path}`);
     } else {
       history.replaceState(null, "", path);
@@ -102,21 +102,18 @@ function createRouter(options = {}) {
   }
 
   function init() {
-    if (isHashMode) {
-      window.addEventListener("hashchange", handleRouteChange);
-      if (!window.location.hash) {
-        window.location.hash = "/";
-        return;
-      }
-    } else {
-      window.addEventListener("popstate", handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
+    window.addEventListener("hashchange", handleRouteChange);
+    if (!window.location.hash) {
+      window.location.hash = "/";
+      return;
     }
 
     document.addEventListener("click", handleLinkClick);
     handleRouteChange();
 
     return () => {
-      if (isHashMode) {
+      if (isHashMode()) {
         window.removeEventListener("hashchange", handleRouteChange);
       } else {
         window.removeEventListener("popstate", handleRouteChange);
