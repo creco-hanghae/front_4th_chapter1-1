@@ -5,30 +5,22 @@ export const user = {
     return store.get("user") != null;
   },
   login: (user) => {
-    store.set(
-      "user",
-      {
-        username: "",
-        email: "",
-        bio: "",
-        ...user,
-      },
-      { persistent: true },
-    );
+    store.set("user", {
+      username: "",
+      email: "",
+      bio: "",
+      ...user,
+    });
   },
   logout: () => {
     store.remove("user");
   },
   updateProfile: (profile) => {
     const user = store.get("user");
-    store.set(
-      "user",
-      {
-        ...user,
-        ...profile,
-      },
-      { persistent: true },
-    );
+    store.set("user", {
+      ...user,
+      ...profile,
+    });
   },
   getProfile: () => {
     return (
